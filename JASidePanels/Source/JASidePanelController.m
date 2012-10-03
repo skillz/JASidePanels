@@ -43,6 +43,7 @@
 @property (nonatomic, strong) UIView *rightPanelContainer;
 @property (nonatomic, strong) UIView *centerPanelContainer;
 @property (nonatomic, strong) UIView *topPanelContainer;
+@property (nonatomic, strong) UIView *topMenuPanelContainer;
 
 @end
 
@@ -52,6 +53,7 @@
 @synthesize rightPanelContainer = _rightPanelContainer;
 @synthesize centerPanelContainer = _centerPanelContainer;
 @synthesize topPanelContainer = _topPanelContainer;
+@synthesize topMenuPanelContainer = _topMenuPanelContainer;
 @synthesize tapView = _tapView;
 @synthesize style = _style;
 @synthesize state = _state;
@@ -59,12 +61,15 @@
 @synthesize centerPanel = _centerPanel;
 @synthesize rightPanel = _rightPanel;
 @synthesize topPanel = _topPanel;
+@synthesize topMenuPanel = _topMenuPanel;
 @synthesize leftGapPercentage = _leftGapPercentage;
 @synthesize leftFixedWidth = _leftFixedWidth;
 @synthesize rightGapPercentage = _rightGapPercentage;
 @synthesize rightFixedWidth = _rightFixedWidth;
 @synthesize topGapPercentage = _topGapPercentage;
 @synthesize topFixedHeight = _topFixedHeight;
+@synthesize topMenuGapPercentage = _topMenuGapPercentage;
+@synthesize topMenuFixedHeight = _topMenuFixedHeight;
 @synthesize minimumMovePercentage = _minimumMovePercentage;
 @synthesize maximumAnimationDuration = _maximumAnimationDuration;
 @synthesize bounceDuration = _bounceDuration;
@@ -74,12 +79,15 @@
 @synthesize canUnloadRightPanel = _canUnloadRightPanel;
 @synthesize canUnloadLeftPanel = _canUnloadLeftPanel;
 @synthesize canUnloadTopPanel = _canUnloadTopPanel;
+@synthesize canUnloadTopMenuPanel = _canUnloadTopMenuPanel;
 @synthesize shouldResizeLeftPanel = _shouldResizeLeftPanel;
 @synthesize shouldResizeRightPanel = _shouldResizeRightPanel;
 @synthesize shouldResizeTopPanel = _shouldResizeTopPanel;
+@synthesize shouldResizeTopMenuPanel = _shouldResizeTopMenuPanel;
 @synthesize allowLeftOverpan = _allowLeftOverpan;
 @synthesize allowRightOverpan = _allowRightOverpan;
 @synthesize allowTopOverpan = _allowTopOverpan;
+@synthesize allowTopMenuOverpan = _allowTopMenuOverpan;
 @synthesize bounceOnSidePanelOpen = _bounceOnSidePanelOpen;
 @synthesize bounceOnSidePanelClose = _bounceOnSidePanelClose;
 @synthesize visiblePanel = _visiblePanel;
@@ -168,12 +176,16 @@
     self.topPanelContainer = [[UIView alloc] initWithFrame:self.view.bounds];
     self.topPanelContainer.hidden = YES;
     
+    self.topMenuPanelContainer = [[UIView alloc] initWithFrame:self.view.bounds];
+    self.topMenuPanelContainer.hidden = YES;
+    
     [self _configureContainers];
     
     [self.view addSubview:self.centerPanelContainer];
     [self.view addSubview:self.leftPanelContainer];
     [self.view addSubview:self.rightPanelContainer];
     [self.view addSubview:self.topPanelContainer];
+    [self.view addSubview:self.topMenuPanelContainer];
     
     self.state = JASidePanelCenterVisible;
     
@@ -188,6 +200,7 @@
     self.leftPanelContainer = nil;
     self.rightPanelContainer = nil;
     self.topPanelContainer = nil;
+    self.topMenuPanelContainer = nil;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -224,6 +237,8 @@
                 self.visiblePanel = self.centerPanel;
                 self.leftPanelContainer.userInteractionEnabled = NO;
                 self.rightPanelContainer.userInteractionEnabled = NO;
+                self.topPanelContainer.userInteractionEnabled = NO;
+                self.topMenuPanelContainer.userInteractionEnabled = NO;
                 break;
 			}
             case JASidePanelLeftVisible: {
@@ -239,6 +254,11 @@
             case JASidePanelTopVisible: {
                 self.visiblePanel = self.topPanel;
                 self.topPanelContainer.userInteractionEnabled = YES;
+                break;
+			}
+            case JASidePanelTopMenuVisible: {
+                self.visiblePanel = self.topMenuPanel;
+                self.topMenuPanelContainer.userInteractionEnabled = YES;
                 break;
 			}
         }
@@ -282,6 +302,7 @@
     self.leftPanelContainer.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleRightMargin;
     self.rightPanelContainer.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleHeight;
     self.topPanelContainer.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleWidth;
+    self.topMenuPanelContainer.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleWidth;
     self.centerPanelContainer.frame =  self.view.bounds;
     self.centerPanelContainer.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 }
@@ -290,6 +311,7 @@
     CGRect leftFrame = self.view.bounds;
     CGRect rightFrame = self.view.bounds;
     CGRect topFrame = self.view.bounds;
+    CGRect topMenuFrame = self.view.bounds;
     if (self.style == JASidePanelMultipleActive) {
         // left panel container
         leftFrame.size.width = self.leftVisibleWidth;
@@ -302,13 +324,19 @@
         // top panel container
         topFrame.size.width = self.centerPanelContainer.frame.size.width;
         topFrame.origin.x = 0.0;
+        
+        // top menu panel container
+        topMenuFrame.size.width = self.centerPanelContainer.frame.size.width;
+        topMenuFrame.origin.x = 0.0;
     }
     self.leftPanelContainer.frame = leftFrame;
     self.rightPanelContainer.frame = rightFrame;
     self.topPanelContainer.frame = topFrame;
+    self.topMenuPanelContainer.frame = topMenuFrame;
     [self styleContainer:self.leftPanelContainer animate:animate duration:duration];	
     [self styleContainer:self.rightPanelContainer animate:animate duration:duration];
     [self styleContainer:self.topPanelContainer animate:animate duration:duration];
+    [self styleContainer:self.topMenuPanelContainer animate:animate duration:duration];
 }
 
 - (void)_layoutSidePanels {
@@ -333,6 +361,13 @@
             frame.size.height = self.topVisibleHeight;
         }
         self.topPanel.view.frame = frame;
+    }
+    if (self.topMenuPanel.isViewLoaded) {
+        CGRect frame = self.topMenuPanelContainer.bounds;
+        if (self.shouldResizeTopMenuPanel) {
+            frame.size.height = self.topMenuVisibleHeight;
+        }
+        self.topMenuPanel.view.frame = frame;
     }
 }
 
@@ -429,6 +464,22 @@
     }
 }
 
+- (void)setTopMenuPanel:(UIViewController *)topMenuPanel {
+    if (topMenuPanel != _topMenuPanel) {
+        [_topMenuPanel willMoveToParentViewController:nil];
+        [_topMenuPanel.view removeFromSuperview];
+        [_topMenuPanel removeFromParentViewController];
+        _topMenuPanel = topMenuPanel;
+        if (_topMenuPanel) {
+            [self addChildViewController:_topMenuPanel];
+            [self _placeButtonForTopMenuPanel];
+        }
+        if (self.state == JASidePanelTopMenuVisible) {
+            self.visiblePanel = _topMenuPanel;
+        }
+    }
+}
+
 #pragma mark - Panel Buttons
 
 - (void)_placeButtonForLeftPanel {
@@ -457,6 +508,21 @@
         }
         if (!buttonController.navigationItem.leftBarButtonItem) {
             buttonController.navigationItem.leftBarButtonItem = [self topButtonForCenterPanel];
+        }
+    }
+}
+
+- (void)_placeButtonForTopMenuPanel {
+    if (self.topMenuPanel) {
+        UIViewController *buttonController = self.centerPanel;
+        if ([buttonController isKindOfClass:[UINavigationController class]]) {
+            UINavigationController *nav = (UINavigationController *)buttonController;
+            if ([nav.viewControllers count] > 0) {
+                buttonController = [nav.viewControllers objectAtIndex:0];
+            }
+        }
+        if (!buttonController.navigationItem.rightBarButtonItem) {
+            buttonController.navigationItem.rightBarButtonItem = [self topMenuButtonForCenterPanel];
         }
     }
 }
@@ -581,6 +647,10 @@
             [self _showCenterPanel:YES bounce:self.bounceOnSidePanelClose];
             break;
 		}
+        case JASidePanelTopMenuVisible: {
+            [self _showCenterPanel:YES bounce:self.bounceOnSidePanelClose];
+            break;
+		}
     }
     
     _panHorizontal = NO;
@@ -602,6 +672,9 @@
 		}
         case JASidePanelTopVisible: {
             [self _showTopPanel:YES bounce:NO];
+		}
+        case JASidePanelTopMenuVisible: {
+            [self _showTopMenuPanel:YES bounce:NO];
 		}
     }
 }
@@ -685,7 +758,8 @@
         case JASidePanelRightVisible: {
             return movement >= minimum;
 		}
-        case JASidePanelTopVisible: {
+        case JASidePanelTopVisible:
+        case JASidePanelTopMenuVisible: {
             minimum = floorf(self.view.bounds.size.height * self.minimumMovePercentage);
             return movement <= -minimum;
 		}
@@ -717,6 +791,7 @@
 - (void)_loadLeftPanel {
     self.rightPanelContainer.hidden = YES;
     self.topPanelContainer.hidden = YES;
+    self.topMenuPanelContainer.hidden = YES;
     if (self.leftPanelContainer.hidden && self.leftPanel) {
         
         if (!_leftPanel.view.superview) {
@@ -733,6 +808,7 @@
 - (void)_loadRightPanel {
     self.leftPanelContainer.hidden = YES;
     self.topPanelContainer.hidden = YES;
+    self.topMenuPanelContainer.hidden = YES;
     if (self.rightPanelContainer.hidden && self.rightPanel) {
         
         if (!_rightPanel.view.superview) {
@@ -749,6 +825,7 @@
 - (void)_loadTopPanel {
     self.leftPanelContainer.hidden = YES;
     self.rightPanelContainer.hidden = YES;
+    self.topMenuPanelContainer.hidden = YES;
     if (self.topPanelContainer.hidden && self.topPanel) {
         
         if (!_topPanel.view.superview) {
@@ -762,6 +839,23 @@
     }
 }
 
+- (void)_loadTopMenuPanel {
+    self.leftPanelContainer.hidden = YES;
+    self.rightPanelContainer.hidden = YES;
+    self.topPanelContainer.hidden = YES;
+    if (self.topMenuPanelContainer.hidden && self.topMenuPanel) {
+        
+        if (!_topMenuPanel.view.superview) {
+            [self _layoutSidePanels];
+            _topMenuPanel.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+            [self stylePanel:_topMenuPanel.view];
+            [self.topMenuPanelContainer addSubview:_topMenuPanel.view];
+        }
+        
+        self.topMenuPanelContainer.hidden = NO;
+    }
+}
+
 - (void)_unloadPanels {
     if (self.canUnloadLeftPanel && self.leftPanel.isViewLoaded) {
         [self.leftPanel.view removeFromSuperview];
@@ -771,6 +865,9 @@
     }
     if (self.canUnloadTopPanel && self.topPanel.isViewLoaded) {
         [self.topPanel.view removeFromSuperview];
+    }
+    if (self.canUnloadTopMenuPanel && self.topMenuPanel.isViewLoaded) {
+        [self.topMenuPanel.view removeFromSuperview];
     }
 }
 
@@ -902,6 +999,13 @@
             }
             break;
 		}
+        case JASidePanelTopMenuVisible: {
+            frame.origin.y = self.topMenuVisibleHeight;
+            if (self.style == JASidePanelMultipleActive) {
+                frame.size.height = self.view.bounds.size.height - self.topMenuVisibleHeight;
+            }
+            break;
+		}
     }
     _centerPanelRestingFrame = frame;
     return _centerPanelRestingFrame;
@@ -917,6 +1021,10 @@
 
 - (CGFloat)topVisibleHeight {
     return self.topFixedHeight ? self.topFixedHeight : floorf(self.view.bounds.size.height * self.topGapPercentage);
+}
+
+- (CGFloat)topMenuVisibleHeight {
+    return self.topMenuFixedHeight ? self.topMenuFixedHeight : floorf(self.view.bounds.size.height * self.topMenuGapPercentage);
 }
 
 #pragma mark - Showing Panels
@@ -987,6 +1095,28 @@
     [self _toggleScrollsToTopForCenter:NO left:NO right:YES];
 }
 
+- (void)_showTopMenuPanel:(BOOL)animated bounce:(BOOL)shouldBounce {
+    self.state = JASidePanelTopMenuVisible;
+    [self _loadTopMenuPanel];
+    
+    [self _adjustCenterFrame];
+    
+    if (animated) {
+        [self _animateVerticalCenterPanel:shouldBounce completion:nil];
+    } else {
+        self.centerPanelContainer.frame = _centerPanelRestingFrame;
+        [self styleContainer:self.centerPanelContainer animate:NO duration:0.0f];
+        if (self.style == JASidePanelMultipleActive) {
+            [self _layoutSideContainers:NO duration:0.0f];
+        }
+    }
+    
+    if (self.style == JASidePanelSingleActive) {
+        self.tapView = [[UIView alloc] init];
+    }
+    [self _toggleScrollsToTopForCenter:NO left:NO right:YES];
+}
+
 - (void)_showCenterPanel:(BOOL)animated bounce:(BOOL)shouldBounce {
     BOOL wasVertical = (self.state == JASidePanelTopVisible);
     self.state = JASidePanelCenterVisible;
@@ -1015,6 +1145,7 @@
         self.leftPanelContainer.hidden = YES;
         self.rightPanelContainer.hidden = YES;
         self.topPanelContainer.hidden = YES;
+        self.topMenuPanelContainer.hidden = YES;
         [self _unloadPanels];
     }
     
@@ -1055,7 +1186,15 @@
         }
     } else if ([keyPath isEqualToString:@"viewControllers"] && object == self.centerPanel) {
         // view controllers have changed, need to replace the button
-        [self _placeButtonForLeftPanel];
+        if (self.topPanel) {
+            [self _placeButtonForTopPanel];
+        } else if (self.leftPanel) {
+            [self _placeButtonForLeftPanel];
+        }
+        
+        if (self.topMenuPanel) {
+            [self _placeButtonForTopMenuPanel];
+        }
     }
 }
 
@@ -1067,6 +1206,12 @@
 
 - (UIBarButtonItem *)topButtonForCenterPanel {
     return [[UIBarButtonItem alloc] initWithImage:[[self class] defaultImage] style:UIBarButtonItemStylePlain target:self action:@selector(toggleTopPanel:)];
+}
+
+- (UIBarButtonItem *)topMenuButtonForCenterPanel {
+    return [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
+                                                         target:self
+                                                         action:@selector(toggleTopMenuPanel:)];
 }
 
 - (void)showLeftPanel:(BOOL)animated {
@@ -1083,6 +1228,10 @@
 
 - (void)showTopPanel:(BOOL)animated {
     [self _showTopPanel:animated bounce:NO];
+}
+
+- (void)showTopMenuPanel:(BOOL)animated {
+    [self _showTopMenuPanel:animated bounce:NO];
 }
 
 - (void)toggleLeftPanel:(id)sender {
@@ -1106,6 +1255,14 @@
         [self _showCenterPanel:YES bounce:NO];
     } else if (self.state == JASidePanelCenterVisible) {
         [self _showTopPanel:YES bounce:NO];
+    }
+}
+
+- (void)toggleTopMenuPanel:(id)sender {
+    if (self.state == JASidePanelTopMenuVisible) {
+        [self _showCenterPanel:YES bounce:NO];
+    } else if (self.state == JASidePanelCenterVisible) {
+        [self _showTopMenuPanel:YES bounce:NO];
     }
 }
 

@@ -20,6 +20,7 @@
 		9561AD2115130F2A005889C6 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 9561AD1F15130F2A005889C6 /* main.m */; };
 		95BCC45A15F081130009F1DA /* UIViewController+JASidePanel.m in Sources */ = {isa = PBXBuildFile; fileRef = 95BCC45915F081130009F1DA /* UIViewController+JASidePanel.m */; };
 		EA967DBE161BD22700CA100E /* JATopViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EA967DBD161BD22700CA100E /* JATopViewController.m */; };
+		EA967DC2161C806500CA100E /* JATopMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EA967DC1161C806500CA100E /* JATopMenuViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -46,6 +47,8 @@
 		95BCC45915F081130009F1DA /* UIViewController+JASidePanel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIViewController+JASidePanel.m"; path = "Source/UIViewController+JASidePanel.m"; sourceTree = "<group>"; };
 		EA967DBC161BD22700CA100E /* JATopViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JATopViewController.h; path = Demo/JATopViewController.h; sourceTree = "<group>"; };
 		EA967DBD161BD22700CA100E /* JATopViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JATopViewController.m; path = Demo/JATopViewController.m; sourceTree = "<group>"; };
+		EA967DC0161C806500CA100E /* JATopMenuViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JATopMenuViewController.h; path = Demo/JATopMenuViewController.h; sourceTree = "<group>"; };
+		EA967DC1161C806500CA100E /* JATopMenuViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JATopMenuViewController.m; path = Demo/JATopMenuViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -136,6 +139,8 @@
 				9561AD1815130F10005889C6 /* JARightViewController.m */,
 				EA967DBC161BD22700CA100E /* JATopViewController.h */,
 				EA967DBD161BD22700CA100E /* JATopViewController.m */,
+				EA967DC0161C806500CA100E /* JATopMenuViewController.h */,
+				EA967DC1161C806500CA100E /* JATopMenuViewController.m */,
 			);
 			name = Demo;
 			sourceTree = "<group>";
@@ -210,6 +215,7 @@
 				9561AD2115130F2A005889C6 /* main.m in Sources */,
 				95BCC45A15F081130009F1DA /* UIViewController+JASidePanel.m in Sources */,
 				EA967DBE161BD22700CA100E /* JATopViewController.m in Sources */,
+				EA967DC2161C806500CA100E /* JATopMenuViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
