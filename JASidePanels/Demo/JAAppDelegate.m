@@ -30,6 +30,7 @@
 #import "JACenterViewController.h"
 #import "JALeftViewController.h"
 #import "JARightViewController.h"
+#import "JATopViewController.h"
 
 @implementation JAAppDelegate
 
@@ -45,6 +46,8 @@
 	self.viewController.leftPanel = [[JALeftViewController alloc] init];
 	self.viewController.centerPanel = [[UINavigationController alloc] initWithRootViewController:[[JACenterViewController alloc] init]];
 	self.viewController.rightPanel = [[JARightViewController alloc] init];
+    self.viewController.topPanel = [[JATopViewController alloc] init];
+    self.viewController.topFixedHeight = self.window.bounds.size.height - 64.0;
 	
 	self.window.rootViewController = self.viewController;
     [self.window makeKeyAndVisible];

@@ -33,7 +33,8 @@ typedef enum _JASidePanelStyle {
 typedef enum _JASidePanelState {
     JASidePanelCenterVisible = 1,
     JASidePanelLeftVisible,
-    JASidePanelRightVisible
+    JASidePanelRightVisible,
+    JASidePanelTopVisible
 } JASidePanelState;
 
 @interface JASidePanelController : UIViewController<UIGestureRecognizerDelegate>
@@ -44,15 +45,18 @@ typedef enum _JASidePanelState {
 @property (nonatomic, strong) UIViewController *leftPanel;   // optional
 @property (nonatomic, strong) UIViewController *centerPanel; // required
 @property (nonatomic, strong) UIViewController *rightPanel;  // optional
+@property (nonatomic, strong) UIViewController *topPanel;    // optional
 
 // show the panels
 - (void)showLeftPanel:(BOOL)animated;
 - (void)showRightPanel:(BOOL)animated;
 - (void)showCenterPanel:(BOOL)animated;
+- (void)showTopPanel:(BOOL)animated;
 
 // toggle them opened/closed
 - (void)toggleLeftPanel:(id)sender;
 - (void)toggleRightPanel:(id)sender;
+- (void)toggleTopPanel:(id)sender;
 
 #pragma mark - Look & Feel
 
@@ -76,6 +80,15 @@ typedef enum _JASidePanelState {
 
 // the visible width of the right panel
 @property (nonatomic, readonly) CGFloat rightVisibleWidth;
+
+// size the top panel based on % of total screen width
+@property (nonatomic) CGFloat topGapPercentage;
+
+// size the top panel based on this fixed size. overrides topGapPercentage
+@property (nonatomic) CGFloat topFixedHeight;
+
+// the visible width of the top panel
+@property (nonatomic, readonly) CGFloat topVisibleHeight;
 
 // by default applies a black shadow to the container. override in sublcass to change
 - (void)styleContainer:(UIView *)container animate:(BOOL)animate duration:(NSTimeInterval)duration;
@@ -133,18 +146,22 @@ typedef enum _JASidePanelState {
 // Determines whether or not the panel's views are removed when not visble. If YES, rightPanel & leftPanel's views are eligible for viewDidUnload
 @property (nonatomic, assign) BOOL canUnloadRightPanel; // defaults to NO
 @property (nonatomic, assign) BOOL canUnloadLeftPanel;  // defaults to NO
+@property (nonatomic, assign) BOOL canUnloadTopPanel;  // defaults to NO
 
 // Determines whether or not the panel's views should be resized when they are displayed. If yes, the views will be resized to their visible width
 @property (nonatomic, assign) BOOL shouldResizeRightPanel; // defaults to NO
 @property (nonatomic, assign) BOOL shouldResizeLeftPanel;  // defaults to NO
+@property (nonatomic, assign) BOOL shouldResizeTopPanel;  // defaults to NO
 
 // Determines whether or not the center panel can be panned beyound the the visible area of the side panels
 @property (nonatomic, assign) BOOL allowRightOverpan; // defaults to YES
 @property (nonatomic, assign) BOOL allowLeftOverpan;  // defaults to YES
+@property (nonatomic, assign) BOOL allowTopOverpan;  // defaults to YES
 
 // Containers for the panels.
 @property (nonatomic, strong, readonly) UIView *leftPanelContainer;
 @property (nonatomic, strong, readonly) UIView *rightPanelContainer;
 @property (nonatomic, strong, readonly) UIView *centerPanelContainer;
+@property (nonatomic, strong, readonly) UIView *topPanelContainer;
 
 @end

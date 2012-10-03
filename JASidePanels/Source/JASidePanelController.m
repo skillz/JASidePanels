@@ -30,6 +30,8 @@
 @interface JASidePanelController() {
     CGRect _centerPanelRestingFrame;		
     CGPoint _locationBeforePan;
+    BOOL _panVertical;
+    BOOL _panHorizontal;
 }
 
 @property (nonatomic, readwrite) JASidePanelState state;
@@ -40,6 +42,7 @@
 @property (nonatomic, strong) UIView *leftPanelContainer;
 @property (nonatomic, strong) UIView *rightPanelContainer;
 @property (nonatomic, strong) UIView *centerPanelContainer;
+@property (nonatomic, strong) UIView *topPanelContainer;
 
 @end
 
@@ -48,16 +51,20 @@
 @synthesize leftPanelContainer = _leftPanelContainer;
 @synthesize rightPanelContainer = _rightPanelContainer;
 @synthesize centerPanelContainer = _centerPanelContainer;
+@synthesize topPanelContainer = _topPanelContainer;
 @synthesize tapView = _tapView;
 @synthesize style = _style;
 @synthesize state = _state;
 @synthesize leftPanel = _leftPanel;
 @synthesize centerPanel = _centerPanel;
 @synthesize rightPanel = _rightPanel;
+@synthesize topPanel = _topPanel;
 @synthesize leftGapPercentage = _leftGapPercentage;
 @synthesize leftFixedWidth = _leftFixedWidth;
 @synthesize rightGapPercentage = _rightGapPercentage;
 @synthesize rightFixedWidth = _rightFixedWidth;
+@synthesize topGapPercentage = _topGapPercentage;
+@synthesize topFixedHeight = _topFixedHeight;
 @synthesize minimumMovePercentage = _minimumMovePercentage;
 @synthesize maximumAnimationDuration = _maximumAnimationDuration;
 @synthesize bounceDuration = _bounceDuration;
@@ -66,10 +73,13 @@
 @synthesize recognizesPanGesture = _recognizesPanGesture;
 @synthesize canUnloadRightPanel = _canUnloadRightPanel;
 @synthesize canUnloadLeftPanel = _canUnloadLeftPanel;
+@synthesize canUnloadTopPanel = _canUnloadTopPanel;
 @synthesize shouldResizeLeftPanel = _shouldResizeLeftPanel;
 @synthesize shouldResizeRightPanel = _shouldResizeRightPanel;
+@synthesize shouldResizeTopPanel = _shouldResizeTopPanel;
 @synthesize allowLeftOverpan = _allowLeftOverpan;
 @synthesize allowRightOverpan = _allowRightOverpan;
+@synthesize allowTopOverpan = _allowTopOverpan;
 @synthesize bounceOnSidePanelOpen = _bounceOnSidePanelOpen;
 @synthesize bounceOnSidePanelClose = _bounceOnSidePanelClose;
 @synthesize visiblePanel = _visiblePanel;
@@ -126,6 +136,7 @@
     self.style = JASidePanelSingleActive;
     self.leftGapPercentage = 0.8f;
     self.rightGapPercentage = 0.8f;
+    self.topGapPercentage = 0.8f;
     self.minimumMovePercentage = 0.15f;
     self.maximumAnimationDuration = 0.2f;
     self.bounceDuration = 0.1f;
@@ -134,6 +145,7 @@
     self.recognizesPanGesture = YES;
     self.allowLeftOverpan = YES;
     self.allowRightOverpan = YES;
+    self.allowTopOverpan = YES;
     self.bounceOnSidePanelOpen = YES;
     self.shouldDelegateAutorotateToVisiblePanel = YES;
 }
@@ -153,11 +165,15 @@
     self.rightPanelContainer = [[UIView alloc] initWithFrame:self.view.bounds];
     self.rightPanelContainer.hidden = YES;
     
+    self.topPanelContainer = [[UIView alloc] initWithFrame:self.view.bounds];
+    self.topPanelContainer.hidden = YES;
+    
     [self _configureContainers];
     
     [self.view addSubview:self.centerPanelContainer];
     [self.view addSubview:self.leftPanelContainer];
     [self.view addSubview:self.rightPanelContainer];
+    [self.view addSubview:self.topPanelContainer];
     
     self.state = JASidePanelCenterVisible;
     
@@ -171,6 +187,7 @@
     self.centerPanelContainer = nil;
     self.leftPanelContainer = nil;
     self.rightPanelContainer = nil;
+    self.topPanelContainer = nil;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -219,6 +236,11 @@
                 self.rightPanelContainer.userInteractionEnabled = YES;
                 break;
 			}
+            case JASidePanelTopVisible: {
+                self.visiblePanel = self.topPanel;
+                self.topPanelContainer.userInteractionEnabled = YES;
+                break;
+			}
         }
     }
 }
@@ -259,6 +281,7 @@
 - (void)_configureContainers {
     self.leftPanelContainer.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleRightMargin;
     self.rightPanelContainer.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleHeight;
+    self.topPanelContainer.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleWidth;
     self.centerPanelContainer.frame =  self.view.bounds;
     self.centerPanelContainer.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 }
@@ -266,6 +289,7 @@
 - (void)_layoutSideContainers:(BOOL)animate duration:(NSTimeInterval)duration {
     CGRect leftFrame = self.view.bounds;
     CGRect rightFrame = self.view.bounds;
+    CGRect topFrame = self.view.bounds;
     if (self.style == JASidePanelMultipleActive) {
         // left panel container
         leftFrame.size.width = self.leftVisibleWidth;
@@ -274,11 +298,17 @@
         // right panel container
         rightFrame.size.width = self.rightVisibleWidth;
         rightFrame.origin.x = self.centerPanelContainer.frame.origin.x + self.centerPanelContainer.frame.size.width;
+
+        // top panel container
+        topFrame.size.width = self.centerPanelContainer.frame.size.width;
+        topFrame.origin.x = 0.0;
     }
     self.leftPanelContainer.frame = leftFrame;
     self.rightPanelContainer.frame = rightFrame;
+    self.topPanelContainer.frame = topFrame;
     [self styleContainer:self.leftPanelContainer animate:animate duration:duration];	
-    [self styleContainer:self.rightPanelContainer animate:animate duration:duration];	
+    [self styleContainer:self.rightPanelContainer animate:animate duration:duration];
+    [self styleContainer:self.topPanelContainer animate:animate duration:duration];
 }
 
 - (void)_layoutSidePanels {
@@ -296,6 +326,13 @@
             frame.size.width = self.leftVisibleWidth;
         }
         self.leftPanel.view.frame = frame;
+    }
+    if (self.topPanel.isViewLoaded) {
+        CGRect frame = self.topPanelContainer.bounds;
+        if (self.shouldResizeTopPanel) {
+            frame.size.height = self.topVisibleHeight;
+        }
+        self.topPanel.view.frame = frame;
     }
 }
 
@@ -376,6 +413,22 @@
     }
 }
 
+- (void)setTopPanel:(UIViewController *)topPanel {
+    if (topPanel != _topPanel) {
+        [_topPanel willMoveToParentViewController:nil];
+        [_topPanel.view removeFromSuperview];
+        [_topPanel removeFromParentViewController];
+        _topPanel = topPanel;
+        if (_topPanel) {
+            [self addChildViewController:_topPanel];
+            [self _placeButtonForTopPanel];
+        }
+        if (self.state == JASidePanelTopVisible) {
+            self.visiblePanel = _topPanel;
+        }
+    }
+}
+
 #pragma mark - Panel Buttons
 
 - (void)_placeButtonForLeftPanel {
@@ -393,6 +446,21 @@
     }	
 }
 
+- (void)_placeButtonForTopPanel {
+    if (self.topPanel) {
+        UIViewController *buttonController = self.centerPanel;
+        if ([buttonController isKindOfClass:[UINavigationController class]]) {
+            UINavigationController *nav = (UINavigationController *)buttonController;
+            if ([nav.viewControllers count] > 0) {
+                buttonController = [nav.viewControllers objectAtIndex:0];
+            }
+        }
+        if (!buttonController.navigationItem.leftBarButtonItem) {
+            buttonController.navigationItem.leftBarButtonItem = [self topButtonForCenterPanel];
+        }
+    }
+}
+
 #pragma mark - Gesture Recognizer Delegate
 
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
@@ -405,9 +473,23 @@
         CGPoint translate = [pan translationInView:self.centerPanelContainer];
         BOOL possible = translate.x != 0 && ((fabsf(translate.y) / fabsf(translate.x)) < 1.0f);
         if (possible && ((translate.x > 0 && self.leftPanel) || (translate.x < 0 && self.rightPanel))) {
+            _panHorizontal = YES;
+            _panVertical = NO;
             return YES;
+        } else {
+            possible = translate.y != 0 && ((fabsf(translate.x) / fabsf(translate.y)) < 1.0f);
+            
+            if (possible && (translate.y > 0 && self.topPanel)) {
+                _panHorizontal = NO;
+                _panVertical = YES;
+                return YES;
+            }
         }
     }
+    
+    _panHorizontal = NO;
+    _panVertical = NO;
+    
     return NO;
 }
 
@@ -431,7 +513,13 @@
         
         CGPoint translate = [pan translationInView:self.centerPanelContainer];
         CGRect frame = _centerPanelRestingFrame;
-        frame.origin.x += [self _correctMovement:translate.x];
+        
+        if (_panHorizontal) {
+            frame.origin.x += [self _correctMovement:translate.x];
+        } else if (_panVertical) {
+            frame.origin.y += [self _correctVerticalMovement:translate.y];
+        }
+        
         self.centerPanelContainer.frame = frame;
         
         // if center panel has focus, make sure correct side panel is revealed
@@ -440,30 +528,45 @@
                 [self _loadLeftPanel];
             } else if(frame.origin.x < 0.0f) {
                 [self _loadRightPanel];
+            } else if(frame.origin.y > 0.0f) {
+                [self _loadTopPanel];
             }
         }
         
         if (sender.state == UIGestureRecognizerStateEnded) {
-            CGFloat deltaX =  frame.origin.x - _locationBeforePan.x;			
-            if ([self _validateThreshold:deltaX]) {
+            CGFloat deltaX =  frame.origin.x - _locationBeforePan.x;
+			CGFloat deltaY =  frame.origin.y - _locationBeforePan.y;
+            if (_panHorizontal && [self _validateThreshold:deltaX]) {
                 [self _completePan:deltaX];
+            } else if (_panVertical && [self _validateThreshold:deltaY]) {
+                [self _completePan:deltaY];
             } else {
                 [self _undoPan];
             }
         } else if (sender.state == UIGestureRecognizerStateCancelled) {
             [self _undoPan];
+            
+            _panHorizontal = NO;
+            _panVertical = NO;
         }
     }
 }
 
-- (void)_completePan:(CGFloat)deltaX {
+- (void)_completePan:(CGFloat)delta {
     switch (self.state) {
         case JASidePanelCenterVisible: {
-            if (deltaX > 0.0f) {
-                [self _showLeftPanel:YES bounce:self.bounceOnSidePanelOpen];
-            } else {
-                [self _showRightPanel:YES bounce:self.bounceOnSidePanelOpen];
+            if (_panHorizontal) {
+                if (delta > 0.0f) {
+                    [self _showLeftPanel:YES bounce:self.bounceOnSidePanelOpen];
+                } else {
+                    [self _showRightPanel:YES bounce:self.bounceOnSidePanelOpen];
+                }
+            } else if (_panVertical) {
+                if (delta > 0.0f) {
+                    [self _showTopPanel:YES bounce:self.bounceOnSidePanelOpen];
+                }
             }
+            
             break;
 		}
         case JASidePanelLeftVisible: {
@@ -474,7 +577,14 @@
             [self _showCenterPanel:YES bounce:self.bounceOnSidePanelClose];
             break;
 		}
+        case JASidePanelTopVisible: {
+            [self _showCenterPanel:YES bounce:self.bounceOnSidePanelClose];
+            break;
+		}
     }
+    
+    _panHorizontal = NO;
+    _panVertical = NO;
 }
 
 - (void)_undoPan {
@@ -489,6 +599,9 @@
 		}
         case JASidePanelRightVisible: {
             [self _showRightPanel:YES bounce:NO];
+		}
+        case JASidePanelTopVisible: {
+            [self _showTopPanel:YES bounce:NO];
 		}
     }
 }
@@ -544,6 +657,22 @@
     return movement;
 }
 
+- (CGFloat)_correctVerticalMovement:(CGFloat)movement {
+    CGFloat position = _centerPanelRestingFrame.origin.y + movement;
+    if (self.state == JASidePanelCenterVisible) {
+        if ((position > 0.0f && !self.topPanel)) {
+            return 0.0f;
+        }
+    } else if (self.state == JASidePanelTopVisible  && !self.allowTopOverpan) {
+        if (position > self.topVisibleHeight) {
+            return 0.0f;
+        } else if (position < self.topPanelContainer.frame.origin.y) {
+            return  self.topPanelContainer.frame.origin.y - _centerPanelRestingFrame.origin.y;
+        }
+    }
+    return movement;
+}
+
 - (BOOL)_validateThreshold:(CGFloat)movement {
     CGFloat minimum = floorf(self.view.bounds.size.width * self.minimumMovePercentage);
     switch (self.state) {
@@ -555,6 +684,10 @@
 		}
         case JASidePanelRightVisible: {
             return movement >= minimum;
+		}
+        case JASidePanelTopVisible: {
+            minimum = floorf(self.view.bounds.size.height * self.minimumMovePercentage);
+            return movement <= -minimum;
 		}
     }
     return NO;
@@ -583,6 +716,7 @@
 
 - (void)_loadLeftPanel {
     self.rightPanelContainer.hidden = YES;
+    self.topPanelContainer.hidden = YES;
     if (self.leftPanelContainer.hidden && self.leftPanel) {
         
         if (!_leftPanel.view.superview) {
@@ -598,6 +732,7 @@
 
 - (void)_loadRightPanel {
     self.leftPanelContainer.hidden = YES;
+    self.topPanelContainer.hidden = YES;
     if (self.rightPanelContainer.hidden && self.rightPanel) {
         
         if (!_rightPanel.view.superview) {
@@ -611,12 +746,31 @@
     }
 }
 
+- (void)_loadTopPanel {
+    self.leftPanelContainer.hidden = YES;
+    self.rightPanelContainer.hidden = YES;
+    if (self.topPanelContainer.hidden && self.topPanel) {
+        
+        if (!_topPanel.view.superview) {
+            [self _layoutSidePanels];
+            _topPanel.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+            [self stylePanel:_topPanel.view];
+            [self.topPanelContainer addSubview:_topPanel.view];
+        }
+        
+        self.topPanelContainer.hidden = NO;
+    }
+}
+
 - (void)_unloadPanels {
     if (self.canUnloadLeftPanel && self.leftPanel.isViewLoaded) {
         [self.leftPanel.view removeFromSuperview];
     }
     if (self.canUnloadRightPanel && self.rightPanel.isViewLoaded) {
         [self.rightPanel.view removeFromSuperview];
+    }
+    if (self.canUnloadTopPanel && self.topPanel.isViewLoaded) {
+        [self.topPanel.view removeFromSuperview];
     }
 }
 
@@ -669,6 +823,51 @@
     }];
 }
 
+- (CGFloat)_calculatedVerticalDuration {
+    CGFloat remaining = fabsf(self.centerPanelContainer.frame.origin.y - _centerPanelRestingFrame.origin.y);
+    CGFloat max = _locationBeforePan.y == _centerPanelRestingFrame.origin.y ? remaining : fabsf(_locationBeforePan.y - _centerPanelRestingFrame.origin.y);
+    return max > 0.0f ? self.maximumAnimationDuration * (remaining / max) : self.maximumAnimationDuration;
+}
+
+- (void)_animateVerticalCenterPanel:(BOOL)shouldBounce completion:(void (^)(BOOL finished))completion {
+    CGFloat bounceDistance = (_centerPanelRestingFrame.origin.y - self.centerPanelContainer.frame.origin.y) * self.bouncePercentage;
+    
+    // looks bad if we bounce when the center panel grows
+    if (_centerPanelRestingFrame.size.height > self.centerPanelContainer.frame.size.height) {
+        shouldBounce = NO;
+    }
+    
+    CGFloat duration = [self _calculatedVerticalDuration];
+    [UIView animateWithDuration:duration delay:0.0f options:UIViewAnimationOptionCurveLinear|UIViewAnimationOptionLayoutSubviews animations:^{
+        self.centerPanelContainer.frame = _centerPanelRestingFrame;
+        [self styleContainer:self.centerPanelContainer animate:YES duration:duration];
+        if (self.style == JASidePanelMultipleActive) {
+            [self _layoutSideContainers:NO duration:0.0f];
+        }
+    } completion:^(BOOL finished) {
+        if (shouldBounce) {
+            // make sure correct panel is displayed under the bounce
+            if (self.state == JASidePanelCenterVisible) {
+                if (bounceDistance > 0.0f) {
+                    [self _loadTopPanel];
+                }
+            }
+            // animate the bounce
+            [UIView animateWithDuration:self.bounceDuration delay:0.0f options:UIViewAnimationOptionCurveEaseOut animations:^{
+                CGRect bounceFrame = _centerPanelRestingFrame;
+                bounceFrame.origin.y += bounceDistance;
+                self.centerPanelContainer.frame = bounceFrame;
+            } completion:^(BOOL finished2) {
+                [UIView animateWithDuration:self.bounceDuration delay:0.0f options:UIViewAnimationOptionCurveEaseIn animations:^{
+                    self.centerPanelContainer.frame = _centerPanelRestingFrame;
+                } completion:completion];
+            }];
+        } else if (completion) {
+            completion(finished);
+        }
+    }];
+}
+
 #pragma mark - Panel Sizing
 
 - (CGRect)_adjustCenterFrame {
@@ -696,6 +895,13 @@
             }
             break;
 		}
+        case JASidePanelTopVisible: {
+            frame.origin.y = self.topVisibleHeight;
+            if (self.style == JASidePanelMultipleActive) {
+                frame.size.height = self.view.bounds.size.height - self.topVisibleHeight;
+            }
+            break;
+		}
     }
     _centerPanelRestingFrame = frame;
     return _centerPanelRestingFrame;
@@ -707,6 +913,10 @@
 
 - (CGFloat)rightVisibleWidth {
     return self.rightFixedWidth ? self.rightFixedWidth : floorf(self.view.bounds.size.width * self.rightGapPercentage);
+}
+
+- (CGFloat)topVisibleHeight {
+    return self.topFixedHeight ? self.topFixedHeight : floorf(self.view.bounds.size.height * self.topGapPercentage);
 }
 
 #pragma mark - Showing Panels
@@ -755,17 +965,47 @@
     [self _toggleScrollsToTopForCenter:NO left:NO right:YES];
 }
 
+- (void)_showTopPanel:(BOOL)animated bounce:(BOOL)shouldBounce {
+    self.state = JASidePanelTopVisible;
+    [self _loadTopPanel];
+    
+    [self _adjustCenterFrame];
+    
+    if (animated) {
+        [self _animateVerticalCenterPanel:shouldBounce completion:nil];
+    } else {
+        self.centerPanelContainer.frame = _centerPanelRestingFrame;
+        [self styleContainer:self.centerPanelContainer animate:NO duration:0.0f];
+        if (self.style == JASidePanelMultipleActive) {
+            [self _layoutSideContainers:NO duration:0.0f];
+        }
+    }
+    
+    if (self.style == JASidePanelSingleActive) {
+        self.tapView = [[UIView alloc] init];
+    }
+    [self _toggleScrollsToTopForCenter:NO left:NO right:YES];
+}
+
 - (void)_showCenterPanel:(BOOL)animated bounce:(BOOL)shouldBounce {
+    BOOL wasVertical = (self.state == JASidePanelTopVisible);
     self.state = JASidePanelCenterVisible;
     
     [self _adjustCenterFrame];
     
     if (animated) {
-        [self _animateCenterPanel:shouldBounce completion:^(BOOL finished) {
-            self.leftPanelContainer.hidden = YES;
-            self.rightPanelContainer.hidden = YES;
-            [self _unloadPanels];
-        }];
+        if (wasVertical) {
+            [self _animateCenterPanel:shouldBounce completion:^(BOOL finished) {
+                self.topPanelContainer.hidden = YES;
+                [self _unloadPanels];
+            }];
+        } else {
+            [self _animateCenterPanel:shouldBounce completion:^(BOOL finished) {
+                self.leftPanelContainer.hidden = YES;
+                self.rightPanelContainer.hidden = YES;
+                [self _unloadPanels];
+            }];
+        }
     } else {
         self.centerPanelContainer.frame = _centerPanelRestingFrame;	
         [self styleContainer:self.centerPanelContainer animate:NO duration:0.0f];
@@ -774,6 +1014,7 @@
         }
         self.leftPanelContainer.hidden = YES;
         self.rightPanelContainer.hidden = YES;
+        self.topPanelContainer.hidden = YES;
         [self _unloadPanels];
     }
     
@@ -824,6 +1065,10 @@
     return [[UIBarButtonItem alloc] initWithImage:[[self class] defaultImage] style:UIBarButtonItemStylePlain target:self action:@selector(toggleLeftPanel:)];
 }
 
+- (UIBarButtonItem *)topButtonForCenterPanel {
+    return [[UIBarButtonItem alloc] initWithImage:[[self class] defaultImage] style:UIBarButtonItemStylePlain target:self action:@selector(toggleTopPanel:)];
+}
+
 - (void)showLeftPanel:(BOOL)animated {
     [self _showLeftPanel:animated bounce:NO];
 }
@@ -834,6 +1079,10 @@
 
 - (void)showCenterPanel:(BOOL)animated {
     [self _showCenterPanel:animated bounce:NO];
+}
+
+- (void)showTopPanel:(BOOL)animated {
+    [self _showTopPanel:animated bounce:NO];
 }
 
 - (void)toggleLeftPanel:(id)sender {
@@ -849,6 +1098,14 @@
         [self _showCenterPanel:YES bounce:NO];
     } else if (self.state == JASidePanelCenterVisible) {
         [self _showRightPanel:YES bounce:NO];
+    }
+}
+
+- (void)toggleTopPanel:(id)sender {
+    if (self.state == JASidePanelTopVisible) {
+        [self _showCenterPanel:YES bounce:NO];
+    } else if (self.state == JASidePanelCenterVisible) {
+        [self _showTopPanel:YES bounce:NO];
     }
 }
 

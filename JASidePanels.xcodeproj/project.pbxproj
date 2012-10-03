@@ -19,6 +19,7 @@
 		9561AD1C15130F10005889C6 /* JARightViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9561AD1815130F10005889C6 /* JARightViewController.m */; };
 		9561AD2115130F2A005889C6 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 9561AD1F15130F2A005889C6 /* main.m */; };
 		95BCC45A15F081130009F1DA /* UIViewController+JASidePanel.m in Sources */ = {isa = PBXBuildFile; fileRef = 95BCC45915F081130009F1DA /* UIViewController+JASidePanel.m */; };
+		EA967DBE161BD22700CA100E /* JATopViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EA967DBD161BD22700CA100E /* JATopViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -43,6 +44,8 @@
 		9561AD1F15130F2A005889C6 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = Demo/main.m; sourceTree = "<group>"; };
 		95BCC45815F081130009F1DA /* UIViewController+JASidePanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIViewController+JASidePanel.h"; path = "Source/UIViewController+JASidePanel.h"; sourceTree = "<group>"; };
 		95BCC45915F081130009F1DA /* UIViewController+JASidePanel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIViewController+JASidePanel.m"; path = "Source/UIViewController+JASidePanel.m"; sourceTree = "<group>"; };
+		EA967DBC161BD22700CA100E /* JATopViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JATopViewController.h; path = Demo/JATopViewController.h; sourceTree = "<group>"; };
+		EA967DBD161BD22700CA100E /* JATopViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JATopViewController.m; path = Demo/JATopViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -131,6 +134,8 @@
 				9561AD1615130F10005889C6 /* JALeftViewController.m */,
 				9561AD1715130F10005889C6 /* JARightViewController.h */,
 				9561AD1815130F10005889C6 /* JARightViewController.m */,
+				EA967DBC161BD22700CA100E /* JATopViewController.h */,
+				EA967DBD161BD22700CA100E /* JATopViewController.m */,
 			);
 			name = Demo;
 			sourceTree = "<group>";
@@ -204,6 +209,7 @@
 				9561AD1C15130F10005889C6 /* JARightViewController.m in Sources */,
 				9561AD2115130F2A005889C6 /* main.m in Sources */,
 				95BCC45A15F081130009F1DA /* UIViewController+JASidePanel.m in Sources */,
+				EA967DBE161BD22700CA100E /* JATopViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
