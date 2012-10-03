@@ -521,9 +521,22 @@
                 buttonController = [nav.viewControllers objectAtIndex:0];
             }
         }
-        if (!buttonController.navigationItem.rightBarButtonItem) {
-            buttonController.navigationItem.rightBarButtonItem = [self topMenuButtonForCenterPanel];
+        
+        buttonController.navigationItem.rightBarButtonItem = [self topMenuButtonForCenterPanel];
+    }
+}
+
+- (void)_placeCancelButtonForTopMenuPanel {
+    if (self.topMenuPanel) {
+        UIViewController *buttonController = self.centerPanel;
+        if ([buttonController isKindOfClass:[UINavigationController class]]) {
+            UINavigationController *nav = (UINavigationController *)buttonController;
+            if ([nav.viewControllers count] > 0) {
+                buttonController = [nav.viewControllers objectAtIndex:0];
+            }
         }
+        
+        buttonController.navigationItem.rightBarButtonItem = [self topMenuCancelButtonForCenterPanel];
     }
 }
 
@@ -1119,6 +1132,11 @@
 
 - (void)_showCenterPanel:(BOOL)animated bounce:(BOOL)shouldBounce {
     BOOL wasVertical = (self.state == JASidePanelTopVisible);
+    
+    if (self.state == JASidePanelTopMenuVisible) {
+        [self _placeButtonForTopMenuPanel];
+    }
+    
     self.state = JASidePanelCenterVisible;
     
     [self _adjustCenterFrame];
@@ -1214,6 +1232,12 @@
                                                          action:@selector(toggleTopMenuPanel:)];
 }
 
+- (UIBarButtonItem *)topMenuCancelButtonForCenterPanel {
+    return [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop
+                                                         target:self
+                                                         action:@selector(toggleTopMenuPanel:)];
+}
+
 - (void)showLeftPanel:(BOOL)animated {
     [self _showLeftPanel:animated bounce:NO];
 }
@@ -1260,8 +1284,10 @@
 
 - (void)toggleTopMenuPanel:(id)sender {
     if (self.state == JASidePanelTopMenuVisible) {
+        [self _placeButtonForTopMenuPanel];
         [self _showCenterPanel:YES bounce:NO];
     } else if (self.state == JASidePanelCenterVisible) {
+        [self _placeCancelButtonForTopMenuPanel];
         [self _showTopMenuPanel:YES bounce:NO];
     }
 }
