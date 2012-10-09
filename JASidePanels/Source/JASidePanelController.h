@@ -67,6 +67,12 @@ typedef enum _JASidePanelState {
 // style
 @property (nonatomic) JASidePanelStyle style; // default is JASidePanelSingleActive
 
+// show shadow around center panel. defaults to YES
+@property (nonatomic) BOOL showShadow;
+
+// round the corners of the panels. defaults to YES
+@property (nonatomic) BOOL shouldRoundCorners;
+
 // size the left panel based on % of total screen width
 @property (nonatomic) CGFloat leftGapPercentage; 
 

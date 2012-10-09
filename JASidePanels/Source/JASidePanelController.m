@@ -92,6 +92,8 @@
 @synthesize bounceOnSidePanelClose = _bounceOnSidePanelClose;
 @synthesize visiblePanel = _visiblePanel;
 @synthesize shouldDelegateAutorotateToVisiblePanel = _shouldDelegateAutorotateToVisiblePanel;
+@synthesize shouldRoundCorners = _shouldRoundCorners;
+@synthesize showShadow = _showShadow;
 
 #pragma mark - Icon
 
@@ -156,6 +158,8 @@
     self.allowTopOverpan = YES;
     self.bounceOnSidePanelOpen = YES;
     self.shouldDelegateAutorotateToVisiblePanel = YES;
+    self.shouldRoundCorners = YES;
+    self.showShadow = YES;
 }
 
 #pragma mark - UIViewController
@@ -278,24 +282,28 @@
 }
 
 - (void)styleContainer:(UIView *)container animate:(BOOL)animate duration:(NSTimeInterval)duration {
-    UIBezierPath *shadowPath = [UIBezierPath bezierPathWithRoundedRect:container.bounds cornerRadius:0.0f];
-    if (animate) {
-        CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"shadowPath"];
-        animation.fromValue = (id)container.layer.shadowPath;
-        animation.toValue = (id)shadowPath.CGPath;
-        animation.duration = duration;
-        [container.layer addAnimation:animation forKey:@"shadowPath"];
+    if (self.showShadow) {
+        UIBezierPath *shadowPath = [UIBezierPath bezierPathWithRoundedRect:container.bounds cornerRadius:0.0f];
+        if (animate) {
+            CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"shadowPath"];
+            animation.fromValue = (id)container.layer.shadowPath;
+            animation.toValue = (id)shadowPath.CGPath;
+            animation.duration = duration;
+            [container.layer addAnimation:animation forKey:@"shadowPath"];
+        }
+        container.layer.shadowPath = shadowPath.CGPath;
+        container.layer.shadowColor = [UIColor blackColor].CGColor;
+        container.layer.shadowRadius = 10.0f;
+        container.layer.shadowOpacity = 0.75f;
+        container.clipsToBounds = NO;
     }
-    container.layer.shadowPath = shadowPath.CGPath;	
-    container.layer.shadowColor = [UIColor blackColor].CGColor;
-    container.layer.shadowRadius = 10.0f;
-    container.layer.shadowOpacity = 0.75f;
-    container.clipsToBounds = NO;
 }
 
 - (void)stylePanel:(UIView *)panel {
-    panel.layer.cornerRadius = 6.0f;
-    panel.clipsToBounds = YES;
+    if (self.shouldRoundCorners) {
+        panel.layer.cornerRadius = 6.0f;
+        panel.clipsToBounds = YES;
+    }
 }
 
 - (void)_configureContainers {
