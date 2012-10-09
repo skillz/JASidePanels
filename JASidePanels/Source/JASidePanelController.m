@@ -1140,11 +1140,6 @@
 
 - (void)_showCenterPanel:(BOOL)animated bounce:(BOOL)shouldBounce {
     BOOL wasVertical = (self.state == JASidePanelTopVisible);
-    
-    if (self.state == JASidePanelTopMenuVisible) {
-        [self _placeButtonForTopMenuPanel];
-    }
-    
     self.state = JASidePanelCenterVisible;
     
     [self _adjustCenterFrame];
