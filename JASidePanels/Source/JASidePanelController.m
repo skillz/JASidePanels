@@ -1292,10 +1292,8 @@
 
 - (void)toggleTopMenuPanel:(id)sender {
     if (self.state == JASidePanelTopMenuVisible) {
-        [self _placeButtonForTopMenuPanel];
         [self _showCenterPanel:YES bounce:NO];
     } else if (self.state == JASidePanelCenterVisible) {
-        [self _placeCancelButtonForTopMenuPanel];
         [self _showTopMenuPanel:YES bounce:NO];
     }
 }
