@@ -94,6 +94,7 @@
 @synthesize shouldDelegateAutorotateToVisiblePanel = _shouldDelegateAutorotateToVisiblePanel;
 @synthesize shouldRoundCorners = _shouldRoundCorners;
 @synthesize showShadow = _showShadow;
+@synthesize callCenterPanelViewNotifications = _callCenterPanelViewNotifications;
 
 #pragma mark - Icon
 
@@ -160,6 +161,7 @@
     self.shouldDelegateAutorotateToVisiblePanel = YES;
     self.shouldRoundCorners = YES;
     self.showShadow = YES;
+    self.callCenterPanelViewNotifications = NO;
 }
 
 #pragma mark - UIViewController
@@ -1144,17 +1146,29 @@
     
     [self _adjustCenterFrame];
     
+    if (_callCenterPanelViewNotifications) {
+        [self.centerPanel viewWillAppear:animated];
+    }
+    
     if (animated) {
         if (wasVertical) {
             [self _animateCenterPanel:shouldBounce completion:^(BOOL finished) {
                 self.topPanelContainer.hidden = YES;
                 [self _unloadPanels];
+                
+                if (_callCenterPanelViewNotifications) {
+                    [self.centerPanel viewDidAppear:animated];
+                }
             }];
         } else {
             [self _animateCenterPanel:shouldBounce completion:^(BOOL finished) {
                 self.leftPanelContainer.hidden = YES;
                 self.rightPanelContainer.hidden = YES;
                 [self _unloadPanels];
+                
+                if (_callCenterPanelViewNotifications) {
+                    [self.centerPanel viewDidAppear:animated];
+                }
             }];
         }
     } else {
@@ -1168,6 +1182,10 @@
         self.topPanelContainer.hidden = YES;
         self.topMenuPanelContainer.hidden = YES;
         [self _unloadPanels];
+        
+        if (_callCenterPanelViewNotifications) {
+            [self.centerPanel viewDidAppear:animated];
+        }
     }
     
     self.tapView = nil;

@@ -73,6 +73,9 @@ typedef enum _JASidePanelState {
 // round the corners of the panels. defaults to YES
 @property (nonatomic) BOOL shouldRoundCorners;
 
+// call view notifications (only viewWillAppear and viewDidAppear right now) for center panel. defaults to NO
+@property (nonatomic) BOOL callCenterPanelViewNotifications;
+
 // size the left panel based on % of total screen width
 @property (nonatomic) CGFloat leftGapPercentage; 
 

@@ -45,4 +45,9 @@
     [self.view addSubview:label];
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    NSLog(@"viewWillAppear");
+}
+
 @end

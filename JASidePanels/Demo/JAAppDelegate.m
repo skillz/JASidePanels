@@ -53,7 +53,7 @@
 	
     self.viewController.topMenuPanel = [[JATopMenuViewController alloc] init];
     self.viewController.topMenuFixedHeight = 44.0;
-    
+    self.viewController.callCenterPanelViewNotifications = YES;
 	self.window.rootViewController = self.viewController;
     [self.window makeKeyAndVisible];
     return YES;
