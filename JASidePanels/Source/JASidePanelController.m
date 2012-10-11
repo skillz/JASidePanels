@@ -754,7 +754,7 @@
 - (CGFloat)_correctVerticalMovement:(CGFloat)movement {
     CGFloat position = _centerPanelRestingFrame.origin.y + movement;
     if (self.state == JASidePanelCenterVisible) {
-        if ((position > 0.0f && !self.topPanel)) {
+        if ((position > 0.0f && !self.topPanel) || position < 0.0f) {
             return 0.0f;
         }
     } else if (self.state == JASidePanelTopVisible  && !self.allowTopOverpan) {
