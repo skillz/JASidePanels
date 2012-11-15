@@ -553,7 +553,9 @@
 #pragma mark - Gesture Recognizer Delegate
 
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
-    if (self.panningLimitedToTopViewController && ![self _isOnTopLevelViewController:self.centerPanel]) {
+    if (gestureRecognizer.view == self.tapView) {
+        return YES;
+    } else if (self.panningLimitedToTopViewController && ![self _isOnTopLevelViewController:self.centerPanel]) {
         return NO;
     } else if ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
         UIPanGestureRecognizer *pan = (UIPanGestureRecognizer *)gestureRecognizer;
@@ -572,8 +574,6 @@
                 return YES;
             }
         }
-    } else if (gestureRecognizer.view == self.tapView) {
-        return YES;
     }
     
     _panHorizontal = NO;
@@ -655,29 +655,33 @@
                     [self _showTopPanel:YES bounce:self.bounceOnSidePanelOpen];
                 }
             }
-            
             break;
 		}
         case JASidePanelLeftVisible: {
             [self _showCenterPanel:YES bounce:self.bounceOnSidePanelClose];
+            _panHorizontal = NO;
+            _panVertical = NO;
             break;
 		}
         case JASidePanelRightVisible: {
             [self _showCenterPanel:YES bounce:self.bounceOnSidePanelClose];
+            _panHorizontal = NO;
+            _panVertical = NO;
             break;
 		}
         case JASidePanelTopVisible: {
             [self _showCenterPanel:YES bounce:self.bounceOnSidePanelClose];
+            _panHorizontal = NO;
+            _panVertical = NO;
             break;
 		}
         case JASidePanelTopMenuVisible: {
             [self _showCenterPanel:YES bounce:self.bounceOnSidePanelClose];
+            _panHorizontal = NO;
+            _panVertical = NO;
             break;
 		}
     }
-    
-    _panHorizontal = NO;
-    _panVertical = NO;
 }
 
 - (void)_undoPan {
