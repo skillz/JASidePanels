@@ -466,7 +466,17 @@ static char ja_kvoContext;
         }
         BOOL possible = translate.x != 0 && ((fabsf(translate.y) / fabsf(translate.x)) < 1.0f);
         if (possible && ((translate.x > 0 && self.leftPanel) || (translate.x < 0 && self.rightPanel))) {
-            return YES;
+#warning This is Skillz Specific to ensure the right panel is only opened if drag started at screen edge
+            CGPoint touchPoint = [gestureRecognizer locationOfTouch:0 inView:gestureRecognizer.view];
+            if (translate.x < 0) {
+                if (touchPoint.x < 280) {
+                    return NO;
+                } else {
+                    return YES;
+                }
+            } else {
+                return YES;
+            }
         }
     }
     return NO;
