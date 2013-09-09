@@ -290,12 +290,12 @@ static char ja_kvoContext;
     container.layer.shadowColor = [UIColor blackColor].CGColor;
     container.layer.shadowRadius = 10.0f;
     container.layer.shadowOpacity = 0.75f;
-    container.clipsToBounds = NO;
+    container.clipsToBounds = YES;
 }
 
 - (void)stylePanel:(UIView *)panel {
     panel.layer.cornerRadius = 6.0f;
-    panel.clipsToBounds = YES;
+    panel.clipsToBounds = NO;
 }
 
 - (void)_configureContainers {
@@ -360,6 +360,7 @@ static char ja_kvoContext;
             self.visiblePanel = _centerPanel;
         }
     }
+    
     if (self.isViewLoaded && self.state == JASidePanelCenterVisible) {
         [self _swapCenter:previous previousState:0 with:_centerPanel];
     } else if (self.isViewLoaded) {
@@ -472,7 +473,6 @@ static char ja_kvoContext;
 }
 
 #pragma mark - Pan Gestures
-
 - (void)_addPanGestureToView:(UIView *)view {
     UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(_handlePan:)];
     panGesture.delegate = self;
@@ -491,6 +491,8 @@ static char ja_kvoContext;
         
         if (pan.state == UIGestureRecognizerStateBegan) {
             _locationBeforePan = self.centerPanelContainer.frame.origin;
+            [self.leftPanel viewWillAppear:YES];
+            [self.rightPanel viewWillAppear:YES];
         }
         
         CGPoint translate = [pan translationInView:self.centerPanelContainer];
@@ -873,6 +875,9 @@ static char ja_kvoContext;
         [self _animateCenterPanel:shouldBounce completion:^(__unused BOOL finished) {
             self.leftPanelContainer.hidden = YES;
             self.rightPanelContainer.hidden = YES;
+            
+            [self.leftPanel viewDidDisappear:YES];
+            [self.rightPanel viewDidDisappear:YES];
             [self _unloadPanels];
         }];
     } else {
@@ -883,6 +888,8 @@ static char ja_kvoContext;
         }
         self.leftPanelContainer.hidden = YES;
         self.rightPanelContainer.hidden = YES;
+        [self.leftPanel viewDidDisappear:NO];
+        [self.rightPanel viewDidDisappear:NO];
         [self _unloadPanels];
     }
     
@@ -985,17 +992,17 @@ static char ja_kvoContext;
 
 - (void)toggleLeftPanel:(__unused id)sender {
     if (self.state == JASidePanelLeftVisible) {
-        [self _showCenterPanel:YES bounce:NO];
+        [self _showCenterPanel:YES bounce:YES];
     } else if (self.state == JASidePanelCenterVisible) {
-        [self _showLeftPanel:YES bounce:NO];
+        [self _showLeftPanel:YES bounce:YES];
     }
 }
 
 - (void)toggleRightPanel:(__unused id)sender {
     if (self.state == JASidePanelRightVisible) {
-        [self _showCenterPanel:YES bounce:NO];
+        [self _showCenterPanel:YES bounce:YES];
     } else if (self.state == JASidePanelCenterVisible) {
-        [self _showRightPanel:YES bounce:NO];
+        [self _showRightPanel:YES bounce:YES];
     }
 }
 
