@@ -47,4 +47,9 @@
     self.view.backgroundColor = [UIColor colorWithRed:red green:green blue:blue alpha:1.0f];
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    NSLog(@"viewWillAppear");
+}
+
 @end

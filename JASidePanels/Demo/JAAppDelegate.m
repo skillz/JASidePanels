@@ -30,6 +30,8 @@
 #import "JACenterViewController.h"
 #import "JALeftViewController.h"
 #import "JARightViewController.h"
+#import "JATopViewController.h"
+#import "JATopMenuViewController.h"
 
 @implementation JAAppDelegate
 
@@ -41,11 +43,18 @@
 	
 	self.viewController = [[JASidePanelController alloc] init];
     self.viewController.shouldDelegateAutorotateToVisiblePanel = NO;
+    self.viewController.recognizesPanGesture = YES;
     
 	self.viewController.leftPanel = [[JALeftViewController alloc] init];
 	self.viewController.centerPanel = [[UINavigationController alloc] initWithRootViewController:[[JACenterViewController alloc] init]];
 	self.viewController.rightPanel = [[JARightViewController alloc] init];
+    
+    self.viewController.topPanel = [[JATopViewController alloc] init];
+    self.viewController.topFixedHeight = self.window.bounds.size.height - 64.0;
 	
+    self.viewController.topMenuPanel = [[JATopMenuViewController alloc] init];
+    self.viewController.topMenuFixedHeight = 44.0;
+    self.viewController.callCenterPanelViewNotifications = YES;
 	self.window.rootViewController = self.viewController;
     [self.window makeKeyAndVisible];
     return YES;
