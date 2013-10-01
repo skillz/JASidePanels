@@ -469,7 +469,7 @@ static char ja_kvoContext;
 #warning This is Skillz Specific to ensure the right panel is only opened if drag started at screen edge. Change when Landscape added.
             CGPoint touchPoint = [gestureRecognizer locationOfTouch:0 inView:gestureRecognizer.view];
             if (translate.x < 0) {
-                if (touchPoint.x < 280) {
+                if (touchPoint.x < self.view.bounds.size.width - 40) {
                     return NO;
                 } else {
                     return YES;
