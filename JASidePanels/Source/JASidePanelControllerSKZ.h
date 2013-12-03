@@ -38,7 +38,7 @@ typedef enum _JASidePanelState {
     JASidePanelTopMenuVisible,
 } JASidePanelState;
 
-@interface JASidePanelController : UIViewController<UIGestureRecognizerDelegate>
+@interface JASidePanelControllerSKZ : UIViewController<UIGestureRecognizerDelegate>
 
 #pragma mark - Usage
 
@@ -50,11 +50,15 @@ typedef enum _JASidePanelState {
 @property (nonatomic, strong) UIViewController *topMenuPanel;// optional
 
 // show the panels
-- (void)showLeftPanel:(BOOL)animated;
-- (void)showRightPanel:(BOOL)animated;
-- (void)showCenterPanel:(BOOL)animated;
-- (void)showTopPanel:(BOOL)animated;
-- (void)showTopMenuPanel:(BOOL)animated;
+
+- (void)showLeftPanel:(BOOL)animated __attribute__((deprecated("Use -showLeftPanelAnimated: instead")));
+- (void)showRightPanel:(BOOL)animated __attribute__((deprecated("Use -showRightPanelAnimated: instead")));
+- (void)showCenterPanel:(BOOL)animated __attribute__((deprecated("Use -showCenterPanelAnimated: instead")));
+
+// show the panels
+- (void)showLeftPanelAnimated:(BOOL)animated;
+- (void)showRightPanelAnimated:(BOOL)animated;
+- (void)showCenterPanelAnimated:(BOOL)animated;
 
 // toggle them opened/closed
 - (void)toggleLeftPanel:(id)sender;
@@ -62,19 +66,17 @@ typedef enum _JASidePanelState {
 - (void)toggleTopPanel:(id)sender;
 - (void)toggleTopMenuPanel:(id)sender;
 
+// Calling this while the left or right panel is visible causes the center panel to be completely hidden
+- (void)setCenterPanelHidden:(BOOL)centerPanelHidden animated:(BOOL)animated duration:(NSTimeInterval) duration;
+
 #pragma mark - Look & Feel
 
 // style
 @property (nonatomic) JASidePanelStyle style; // default is JASidePanelSingleActive
 
-// show shadow around center panel. defaults to YES
-@property (nonatomic) BOOL showShadow;
 
-// round the corners of the panels. defaults to YES
-@property (nonatomic) BOOL shouldRoundCorners;
-
-// call view notifications (only viewWillAppear and viewDidAppear right now) for center panel. defaults to NO
-@property (nonatomic) BOOL callCenterPanelViewNotifications;
+// push side panels instead of overlapping them
+@property (nonatomic, assign) BOOL pushesSidePanels;
 
 // size the left panel based on % of total screen width
 @property (nonatomic) CGFloat leftGapPercentage; 
@@ -138,6 +140,9 @@ typedef enum _JASidePanelState {
 // should the center panel bounce when you are panning closed a left/right panel.
 @property (nonatomic) BOOL bounceOnSidePanelClose; // defaults to NO
 
+// while changing the center panel, should we bounce it offscreen?
+@property (nonatomic) BOOL bounceOnCenterPanelChange; // defaults to YES
+
 #pragma mark - Gesture Behavior
 
 // Determines whether the pan gesture is limited to the top ViewController in a UINavigationController/UITabBarController
@@ -162,6 +167,9 @@ typedef enum _JASidePanelState {
 // Current state of panels. Use KVO to monitor state changes
 @property (nonatomic, readonly) JASidePanelState state;
 
+// Whether or not the center panel is completely hidden
+@property (nonatomic, assign) BOOL centerPanelHidden;
+
 // The currently visible panel
 @property (nonatomic, weak, readonly) UIViewController *visiblePanel;
 
@@ -185,6 +193,10 @@ typedef enum _JASidePanelState {
 @property (nonatomic, assign) BOOL allowLeftOverpan;  // defaults to YES
 @property (nonatomic, assign) BOOL allowTopOverpan;  // defaults to YES
 @property (nonatomic, assign) BOOL allowTopMenuOverpan;  // defaults to YES
+
+// Determines whether or not the left or right panel can be swiped into view. Use if only way to view a panel is with a button
+@property (nonatomic, assign) BOOL allowLeftSwipe;  // defaults to YES
+@property (nonatomic, assign) BOOL allowRightSwipe; // defaults to YES
 
 // Containers for the panels.
 @property (nonatomic, strong, readonly) UIView *leftPanelContainer;

@@ -25,15 +25,15 @@
 
 #import "UIViewController+JASidePanel.h"
 
-#import "JASidePanelController.h"
+#import "JASidePanelControllerSKZ.h"
 
 @implementation UIViewController (JASidePanel)
 
-- (JASidePanelController *)sidePanelController {
+- (JASidePanelControllerSKZ *)sidePanelController {
     UIViewController *iter = self.parentViewController;
     while (iter) {
-        if ([iter isKindOfClass:[JASidePanelController class]]) {
-            return (JASidePanelController *)iter;
+        if ([iter isKindOfClass:[JASidePanelControllerSKZ class]]) {
+            return (JASidePanelControllerSKZ *)iter;
         } else if (iter.parentViewController && iter.parentViewController != iter) {
             iter = iter.parentViewController;
         } else {
