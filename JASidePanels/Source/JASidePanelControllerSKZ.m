@@ -24,12 +24,13 @@
  */
 
 #import <QuartzCore/QuartzCore.h>
+
 #import "JASidePanelControllerSKZ.h"
 
 static char ja_kvoContext;
 
 @interface JASidePanelControllerSKZ() {
-    CGRect _centerPanelRestingFrame;
+    CGRect _centerPanelRestingFrame;		
     CGPoint _locationBeforePan;
 }
 
@@ -204,7 +205,7 @@ static char ja_kvoContext;
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation {
     __strong UIViewController *visiblePanel = self.visiblePanel;
-    
+
     if (self.shouldDelegateAutorotateToVisiblePanel) {
         return [visiblePanel shouldAutorotateToInterfaceOrientation:toInterfaceOrientation];
     } else {
@@ -216,14 +217,13 @@ static char ja_kvoContext;
 
 - (BOOL)shouldAutorotate {
     __strong UIViewController *visiblePanel = self.visiblePanel;
-    
+
     if (self.shouldDelegateAutorotateToVisiblePanel && [visiblePanel respondsToSelector:@selector(shouldAutorotate)]) {
         return [visiblePanel shouldAutorotate];
     } else {
         return YES;
     }
 }
-
 
 #endif
 
@@ -440,7 +440,7 @@ static char ja_kvoContext;
                 buttonController = [nav.viewControllers objectAtIndex:0];
             }
         }
-        if (!buttonController.navigationItem.leftBarButtonItem) {
+        if (!buttonController.navigationItem.leftBarButtonItem) {   
             buttonController.navigationItem.leftBarButtonItem = [self leftButtonForCenterPanel];
         }
     }
@@ -469,7 +469,7 @@ static char ja_kvoContext;
 #warning This is Skillz Specific to ensure the right panel is only opened if drag started at screen edge. Change when Landscape added.
             CGPoint touchPoint = [gestureRecognizer locationOfTouch:0 inView:gestureRecognizer.view];
             if (translate.x < 0) {
-                if (touchPoint.x < 280) {
+                if (touchPoint.x < self.view.bounds.size.width - 40) {
                     return NO;
                 } else {
                     return YES;
@@ -492,10 +492,10 @@ static char ja_kvoContext;
 }
 
 - (void)_handlePan:(UIGestureRecognizer *)sender {
-    if (!_recognizesPanGesture) {
-        return;
-    }
-    
+	if (!_recognizesPanGesture) {
+		return;
+	}
+	
     if ([sender isKindOfClass:[UIPanGestureRecognizer class]]) {
         UIPanGestureRecognizer *pan = (UIPanGestureRecognizer *)sender;
         

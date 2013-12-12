@@ -50,7 +50,6 @@ typedef enum _JASidePanelState {
 @property (nonatomic, strong) UIViewController *topMenuPanel;// optional
 
 // show the panels
-
 - (void)showLeftPanel:(BOOL)animated __attribute__((deprecated("Use -showLeftPanelAnimated: instead")));
 - (void)showRightPanel:(BOOL)animated __attribute__((deprecated("Use -showRightPanelAnimated: instead")));
 - (void)showCenterPanel:(BOOL)animated __attribute__((deprecated("Use -showCenterPanelAnimated: instead")));
@@ -69,11 +68,13 @@ typedef enum _JASidePanelState {
 // Calling this while the left or right panel is visible causes the center panel to be completely hidden
 - (void)setCenterPanelHidden:(BOOL)centerPanelHidden animated:(BOOL)animated duration:(NSTimeInterval) duration;
 
+// Calling this while the left or right panel is visible causes the center panel to be completely hidden
+- (void)setCenterPanelHidden:(BOOL)centerPanelHidden animated:(BOOL)animated duration:(NSTimeInterval) duration;
+
 #pragma mark - Look & Feel
 
 // style
 @property (nonatomic) JASidePanelStyle style; // default is JASidePanelSingleActive
-
 
 // push side panels instead of overlapping them
 @property (nonatomic, assign) BOOL pushesSidePanels;

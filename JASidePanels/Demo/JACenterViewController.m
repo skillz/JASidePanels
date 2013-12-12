@@ -31,18 +31,20 @@
 
 @implementation JACenterViewController
 
+- (id)init {
+    if (self = [super init]) {
+        self.title = @"Center Panel";
+    }
+    return self;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.view.backgroundColor = [UIColor whiteColor];
-    
-    UILabel *label  = [[UILabel alloc] init];
-    label.font = [UIFont boldSystemFontOfSize:20.0f];
-    label.text = @"Center Panel";
-    [label sizeToFit];
-    label.center = CGPointMake(floorf(self.view.bounds.size.width/2.0f), floorf((self.view.bounds.size.height - self.navigationController.navigationBar.frame.size.height)/2.0f));
-    label.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleTopMargin;
-    [self.view addSubview:label];
+    CGFloat red = (CGFloat)arc4random() / 0x100000000;
+    CGFloat green = (CGFloat)arc4random() / 0x100000000;
+    CGFloat blue = (CGFloat)arc4random() / 0x100000000;
+    self.view.backgroundColor = [UIColor colorWithRed:red green:green blue:blue alpha:1.0f];
 }
 
 - (void)viewWillAppear:(BOOL)animated
