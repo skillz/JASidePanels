@@ -29,7 +29,7 @@
 
 @implementation UIViewController (JASidePanel)
 
-- (JASidePanelControllerSKZ *)sidePanelController {
+- (JASidePanelControllerSKZ *)sidePanelControllerSKZ {
     UIViewController *iter = self.parentViewController;
     while (iter) {
         if ([iter isKindOfClass:[JASidePanelControllerSKZ class]]) {
