@@ -261,6 +261,8 @@ static char ja_kvoContext;
                 self.rightPanelContainer.userInteractionEnabled = YES;
                 break;
             }
+            default:
+                break;
         }
     }
 }
@@ -560,6 +562,8 @@ static char ja_kvoContext;
             [self _showCenterPanel:YES bounce:self.bounceOnSidePanelClose];
             break;
         }
+        default:
+            break;
     }
 }
 
@@ -576,6 +580,8 @@ static char ja_kvoContext;
         case JASidePanelRightVisible: {
             [self _showRightPanel:YES bounce:NO];
         }
+        default:
+            break;
     }
 }
 
@@ -648,6 +654,8 @@ static char ja_kvoContext;
         case JASidePanelRightVisible: {
             return movement >= minimum;
         }
+        default:
+            break;
     }
     return NO;
 }
@@ -809,6 +817,8 @@ static char ja_kvoContext;
             }
             break;
         }
+        default:
+            break;
     }
     _centerPanelRestingFrame = frame;
     return _centerPanelRestingFrame;

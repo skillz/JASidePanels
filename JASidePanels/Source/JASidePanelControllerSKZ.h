@@ -62,11 +62,6 @@ typedef enum _JASidePanelState {
 // toggle them opened/closed
 - (void)toggleLeftPanel:(id)sender;
 - (void)toggleRightPanel:(id)sender;
-- (void)toggleTopPanel:(id)sender;
-- (void)toggleTopMenuPanel:(id)sender;
-
-// Calling this while the left or right panel is visible causes the center panel to be completely hidden
-- (void)setCenterPanelHidden:(BOOL)centerPanelHidden animated:(BOOL)animated duration:(NSTimeInterval) duration;
 
 // Calling this while the left or right panel is visible causes the center panel to be completely hidden
 - (void)setCenterPanelHidden:(BOOL)centerPanelHidden animated:(BOOL)animated duration:(NSTimeInterval) duration;
@@ -159,9 +154,6 @@ typedef enum _JASidePanelState {
 
 // Default button to place in gestureViewControllers top viewController. Override in sublcass to change look of default button
 - (UIBarButtonItem *)leftButtonForCenterPanel;
-- (UIBarButtonItem *)topButtonForCenterPanel;
-- (UIBarButtonItem *)topMenuButtonForCenterPanel;
-- (UIBarButtonItem *)topMenuCancelButtonForCenterPanel;
 
 #pragma mark - Nuts & Bolts
 
