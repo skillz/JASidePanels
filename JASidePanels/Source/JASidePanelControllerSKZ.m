@@ -169,6 +169,9 @@ static char ja_kvoContext;
     
     [self _configureContainers];
     
+    if (isPad()) {
+        [self.view setTransform:CGAffineTransformMakeScale(2, 2)];
+    }
     [self.view addSubview:self.centerPanelContainer];
     [self.view addSubview:self.leftPanelContainer];
     [self.view addSubview:self.rightPanelContainer];
