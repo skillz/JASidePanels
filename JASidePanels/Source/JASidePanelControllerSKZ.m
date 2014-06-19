@@ -110,6 +110,7 @@ static char ja_kvoContext;
 #pragma mark - NSObject
 
 - (void)dealloc {
+    SKZLog(@"dealloc %@", self);
     if (_centerPanel) {
         [_centerPanel removeObserver:self forKeyPath:@"view"];
         [_centerPanel removeObserver:self forKeyPath:@"viewControllers"];
