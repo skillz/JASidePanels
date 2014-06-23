@@ -26,6 +26,7 @@
 #import <QuartzCore/QuartzCore.h>
 
 #import "JASidePanelControllerSKZ.h"
+#import "Skillz_private.h"
 
 static char ja_kvoContext;
 
@@ -1067,6 +1068,11 @@ static char ja_kvoContext;
             }];
         }
     }
+}
+
+- (BOOL)prefersStatusBarHidden
+{
+    return [[[[Skillz skillzInstance] navigationController] viewControllerBeingPushed] prefersStatusBarHidden];
 }
 
 @end
