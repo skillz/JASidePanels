@@ -191,6 +191,14 @@ static char ja_kvoContext;
     [self _layoutSidePanels];
     self.centerPanelContainer.frame = [self _adjustCenterFrame];
     [self styleContainer:self.centerPanelContainer animate:NO duration:0.0f];
+    
+    if ([Skillz isMarmaladeGame]) {
+        if (isPad()) {
+            [self.view setTransform:CGAffineTransformMakeScale(2, 2)];
+        } else {
+            [self.view setTransform:CGAffineTransformIdentity];
+        }
+    }
 }
 
 - (void)viewDidAppear:(BOOL)animated{
