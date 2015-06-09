@@ -297,7 +297,12 @@ static char ja_kvoContext;
     container.layer.shadowColor = [UIColor blackColor].CGColor;
     container.layer.shadowRadius = 10.0f;
     container.layer.shadowOpacity = 0.75f;
-    container.clipsToBounds = YES;
+
+    if (isLandscape()) {
+        container.clipsToBounds = NO;
+    } else {
+        container.clipsToBounds = YES;
+    }
 }
 
 - (void)stylePanel:(UIView *)panel {
@@ -1028,6 +1033,15 @@ static char ja_kvoContext;
         [self _showCenterPanel:YES bounce:YES];
     } else if (self.state == JASidePanelCenterVisible) {
         [self _showRightPanel:YES bounce:YES];
+    }
+}
+
+- (void)toggleSkillzMenu
+{
+    if (isLandscape()) {
+        [self toggleLeftPanel:nil];
+    } else {
+        [self toggleRightPanel:nil];
     }
 }
 
